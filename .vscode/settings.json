@@ -1,6 +1,12 @@
 {
   "cSpell.words": [
     "bson",
-    "mapstructure"
+    "dbname",
+    "jackc",
+    "mapstructure",
+    "pgtype",
+    "sqlc",
+    "sslmode",
+    "Timestamptz"
   ]
 }

@@ -11,11 +11,11 @@ type Config struct {
 	ServerAddress     string `mapstructure:"SERVER_ADDRESS"`
 	TokenSymmetricKey string `mapstructure:"TOKEN_SYMMETRIC_KEY"`
 
-	MongoDBHost     string `mapstructure:"DB_HOST"`
-	MongoDBPort     string `mapstructure:"DB_PORT"`
-	MongoDBUser     string `mapstructure:"DB_USER"`
-	MongoDBPassword string `mapstructure:"DB_PASSWORD"`
-	MongoDB         string `mapstructure:"DB_NAME"`
+	DBHost     string `mapstructure:"DB_HOST"`
+	DBPort     string `mapstructure:"DB_PORT"`
+	DBUser     string `mapstructure:"DB_USER"`
+	DBPassword string `mapstructure:"DB_PASSWORD"`
+	DBName     string `mapstructure:"DB_NAME"`
 
 	AccessTokenDuration time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
 }

@@ -1,17 +1,39 @@
 create-network:
 	docker network create foodCatalog
 
-mongo:
-	docker run -d --network foodCatalog --name foodCatalog \
-		-p 27017:27017 \
-		mongo
+pg:
+	docker run -d \
+		--name foodCatalog \
+		--network foodCatalog \
+		-p 5432:5432 \
+  	-e POSTGRES_USER=root \
+		-e POSTGRES_PASSWORD=secret \
+  	postgres
 
-mongo-rm:
+pgrm:
 	docker stop foodCatalog
 	docker rm foodCatalog
 
-serve:
-	go run main.go
+createdb:
+	docker exec -it foodCatalog createdb --username=root --owner=root foodCatalog
+
+dropdb:
+	docker exec -it foodCatalog dropdb foodCatalog
+
+schema:
+	migrate create -ext sql -dir external/database/migrations -seq init_schema
+
+migrateup:
+	migrate -path database/postgres/migrations -database "postgresql://root:secret@localhost:5432/foodCatalog?sslmode=disable" -verbose up
+
+migratedown:
+	migrate -path database/postgres/migrations -database "postgresql://root:secret@localhost:5432/foodCatalog?sslmode=disable" -verbose down
+
+sqlc:
+	sqlc generate
 
 tidy:
 	go mod tidy
+
+serve:
+	go run cmd/main.go
