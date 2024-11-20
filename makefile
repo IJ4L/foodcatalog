@@ -32,6 +32,12 @@ migratedown:
 sqlc:
 	sqlc generate
 
+gqlgen:
+	go get github.com/99designs/gqlgen/codegen/config@v0.17.56
+	go get github.com/99designs/gqlgen@v0.17.56
+	go run github.com/99designs/gqlgen generate
+	go mod tidy
+
 tidy:
 	go mod tidy
 

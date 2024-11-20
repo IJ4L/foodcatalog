@@ -16,14 +16,18 @@ type Server struct {
 
 func NewServer(config util.Config, repo AppRepository, srv *handler.Server) (*Server, error) {
 	server := &Server{repo: repo, config: config, srv: srv}
+	
 	server.setupRouter()
+
 	return server, nil
 }
 
 func (server *Server) setupRouter() {
 	router := gin.Default()
+
 	router.GET("/", server.graphQLPlayground)
 	router.POST("/query", server.graphQLHandler)
+
 	server.router = router
 }
 

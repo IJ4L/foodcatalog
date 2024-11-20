@@ -7,31 +7,22 @@ package db
 
 import (
 	"context"
-
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const insertUser = `-- name: InsertUser :exec
 INSERT INTO
-  auth (email, password, created_at, updated_at)
+  auth (email, password)
 VALUES
-  ($1, $2, $3, $4)
+  ($1, $2)
 `
 
 type InsertUserParams struct {
-	Email     string             `json:"email"`
-	Password  string             `json:"password"`
-	CreatedAt pgtype.Timestamptz `json:"created_at"`
-	UpdatedAt pgtype.Timestamptz `json:"updated_at"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 func (q *Queries) InsertUser(ctx context.Context, arg InsertUserParams) error {
-	_, err := q.db.Exec(ctx, insertUser,
-		arg.Email,
-		arg.Password,
-		arg.CreatedAt,
-		arg.UpdatedAt,
-	)
+	_, err := q.db.Exec(ctx, insertUser, arg.Email, arg.Password)
 	return err
 }
 

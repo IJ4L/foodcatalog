@@ -1,8 +1,8 @@
 -- name: InsertUser :exec
 INSERT INTO
-  auth (email, password, created_at, updated_at)
+  auth (email, password)
 VALUES
-  ($1, $2, $3, $4);
+  ($1, $2);
 
 -- name: SelectUserByEmail :one
 SELECT
