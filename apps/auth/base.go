@@ -5,8 +5,10 @@ import (
 	"github.com/ij4l/foodCatalog/apps"
 )
 
-func InitializeAuthService(repo *apps.AppRepository) AuthService {
+func InitializeAuthHandler(repo *apps.AppRepository) (authHandler AuthHandler) {
 	ctx := &gin.Context{}
 	authRepo := NewAuthRepository(repo)
-	return NewAuthService(authRepo, ctx)
+	authService := NewAuthService(authRepo, ctx)
+	authHandler = NewAuthHandler(authService)
+	return
 }

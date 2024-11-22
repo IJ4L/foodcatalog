@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"log"
+
 	"github.com/gin-gonic/gin"
 	"github.com/ij4l/foodCatalog/apps"
 	db "github.com/ij4l/foodCatalog/database/postgres/sqlc"
@@ -15,30 +17,32 @@ func NewAuthRepository(repo *apps.AppRepository) authRepository {
 	return authRepository{repo: *repo}
 }
 
-func (ap authRepository) create(md model.NewUser, ctx *gin.Context) error {
+func (ap authRepository) create(mu model.NewUser, ctx *gin.Context) (err error) {
 	arg := db.InsertUserParams{
-		Email:    md.Email,
-		Password: md.Password,
+		Email:    mu.Email,
+		Password: mu.Password,
 	}
 
-	if err := ap.repo.InsertUser(ctx, arg); err != nil {
-		return err
+	if err = ap.repo.InsertUser(ctx, arg); err != nil {
+		log.Println("error inserting user: ", err)
+		return
 	}
 
-	return nil
+	return
 }
 
-func (ap authRepository) getByEmail(email string, ctx *gin.Context) (*model.User, error) {
+func (ap authRepository) getByEmail(email string, ctx *gin.Context) (mu *model.User, err error) {
 	auth, err := ap.repo.SelectUserByEmail(ctx, email)
 	if err != nil {
-		return nil, err
+		log.Println("error selecting user by email: ", err)
+		return
 	}
 
-	rsp := &model.User{
+	mu = &model.User{
 		ID:       int(auth.ID),
 		Email:    auth.Email,
 		Password: auth.Password,
 	}
 
-	return rsp, nil
+	return
 }

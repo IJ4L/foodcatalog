@@ -28,7 +28,7 @@ func main() {
 func loadConfig() util.Config {
 	config, err := util.LoadConfig(".env")
 	if err != nil {
-		log.Fatal("Cannot load configuration:", err)
+		log.Fatalf("Cannot load configuration: %v", err)
 	}
 	return config
 }
@@ -36,7 +36,7 @@ func loadConfig() util.Config {
 func connectDatabase(config util.Config) *pgx.Conn {
 	pgxConn, err := database.ConnectPostgreSql(config)
 	if err != nil {
-		log.Fatal("Cannot connect to database:", err)
+		log.Fatalf("Cannot connect to database: %v", err)
 	}
 	return pgxConn
 }
@@ -49,17 +49,17 @@ func initializeGraphQLServer(repo *apps.AppRepository) *handler.Server {
 func startServer(config util.Config, repo apps.AppRepository, graphServer *handler.Server) {
 	server, err := apps.NewServer(config, repo, graphServer)
 	if err != nil {
-		log.Fatal("Cannot create server:", err)
+		log.Fatalf("Cannot create server: %v", err)
 	}
 
 	if err := server.Start(config.ServerAddress); err != nil {
-		log.Fatal("Cannot start server:", err)
+		log.Fatalf("Cannot start server: %v", err)
 	}
 }
 
 func graphConfig(repo *apps.AppRepository) graph.Config {
 	resolver := graph.Resolver{
-		AuthService: auth.InitializeAuthService(repo),
+		AuthHandler: auth.InitializeAuthHandler(repo),
 	}
 
 	return graph.Config{Resolvers: &resolver}

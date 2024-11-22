@@ -2,6 +2,11 @@
 
 package model
 
+type AuthPayload struct {
+	Token *string `json:"token,omitempty"`
+	User  *User   `json:"user,omitempty"`
+}
+
 type Mutation struct {
 }
 

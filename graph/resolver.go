@@ -7,5 +7,5 @@ import "github.com/ij4l/foodCatalog/apps/auth"
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	AuthService auth.AuthService
+	AuthHandler auth.AuthHandler
 }

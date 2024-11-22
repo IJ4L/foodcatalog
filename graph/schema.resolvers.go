@@ -12,7 +12,7 @@ import (
 
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
-	if err := r.AuthService.Create(input); err != nil {
+	if err := r.AuthHandler.Register(input); err != nil {
 		return nil, err
 	}
 
@@ -26,8 +26,8 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 }
 
 // Login is the resolver for the Login field.
-func (r *queryResolver) Login(ctx context.Context, email string) (*model.User, error) {
-	user, err := r.AuthService.Login(email)
+func (r *queryResolver) Login(ctx context.Context, email string, password string) (*model.AuthPayload, error) {
+	user, err := r.AuthHandler.Login(email, password)
 	if err != nil {
 		return nil, err
 	}
