@@ -17,9 +17,8 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 	}
 
 	rsp := &model.User{
-		ID:       1,
-		Email:    input.Email,
-		Password: input.Password,
+		ID:    1,
+		Email: input.Email,
 	}
 
 	return rsp, nil
@@ -27,12 +26,21 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 
 // Login is the resolver for the Login field.
 func (r *queryResolver) Login(ctx context.Context, email string, password string) (*model.AuthPayload, error) {
-	user, err := r.AuthHandler.Login(email, password)
+	// authID, err := middleware.GinContextFromContext(ctx)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("unauthorized")
+	// }
+
+	db, err := r.AuthHandler.Login(email, password)
 	if err != nil {
 		return nil, err
 	}
 
-	return user, nil
+	// if db.User.ID != *authID {
+	// 	return nil, fmt.Errorf("unauthorized")
+	// }
+
+	return db, nil
 }
 
 // Mutation returns MutationResolver implementation.

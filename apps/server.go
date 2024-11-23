@@ -4,6 +4,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gin-gonic/gin"
+	"github.com/ij4l/foodCatalog/middleware"
 	"github.com/ij4l/foodCatalog/util"
 )
 
@@ -16,7 +17,9 @@ type Server struct {
 
 func NewServer(config util.Config, repo AppRepository, srv *handler.Server) (*Server, error) {
 	server := &Server{repo: repo, config: config, srv: srv}
-	
+
+	util.InitToken(config.TokenSymmetricKey, config.AccessTokenDuration)
+
 	server.setupRouter()
 
 	return server, nil
@@ -26,6 +29,9 @@ func (server *Server) setupRouter() {
 	router := gin.Default()
 
 	router.GET("/", server.graphQLPlayground)
+
+	router.Use(middleware.GinContextToContextMiddleware())
+
 	router.POST("/query", server.graphQLHandler)
 
 	server.router = router

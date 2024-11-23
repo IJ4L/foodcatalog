@@ -1,8 +1,6 @@
 package util
 
 import (
-	"time"
-
 	"github.com/spf13/viper"
 )
 
@@ -17,7 +15,7 @@ type Config struct {
 	DBPassword string `mapstructure:"DB_PASSWORD"`
 	DBName     string `mapstructure:"DB_NAME"`
 
-	AccessTokenDuration time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
+	AccessTokenDuration int `mapstructure:"ACCESS_TOKEN_DURATION"`
 }
 
 func LoadConfig(path string) (config Config, err error) {

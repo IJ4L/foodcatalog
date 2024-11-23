@@ -2,86 +2,83 @@ package util
 
 import (
 	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt"
 )
 
 type JWT struct {
-	Id int `json:"id"`
-
+	Id      int       `json:"id"`
 	Expires time.Time `json:"expires"`
 }
 
-var secretKey string
-var expired int
+var secretKey []byte
+var tokenExpiry time.Duration
 
 func InitToken(secret string, expiredToken int) {
-	secretKey = secret
-	expired = expiredToken
+	secretKey = []byte(secret)
+	tokenExpiry = time.Duration(expiredToken) * time.Hour
 }
 
 func NewJWT(id int) JWT {
 	return JWT{
-		Id: id,
-
-		Expires: time.Now().Add(time.Duration(expired) * time.Minute),
+		Id:      id,
+		Expires: time.Now().Add(tokenExpiry),
 	}
 }
 
-func (j JWT) GenerateToken() (tokString string, err error) {
+func (j JWT) GenerateToken() (string, error) {
+	expires := time.Now().Add(tokenExpiry)
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+	claims := jwt.MapClaims{
 		"id":      j.Id,
-		"expires": j.Expires,
-	})
+		"expires": expires.Format(time.RFC3339),
+		"iat":     time.Now().Unix(),
+	}
 
-	tokString, err = token.SignedString([]byte(secretKey))
-	return
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	tokString, err := token.SignedString(secretKey)
+	return tokString, err
 }
 
-func VerifyToken(tokString string) (token JWT, err error) {
+func VerifyToken(tokString string) (JWT, error) {
 
 	jwtToken, err := jwt.Parse(tokString, func(t *jwt.Token) (interface{}, error) {
 
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-
 			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
 		}
-
-		return []byte(secretKey), nil
+		return secretKey, nil
 	})
+
 	if err != nil {
-		return
+		return JWT{}, fmt.Errorf("failed to parse token: %v", err)
 	}
 
 	claims, ok := jwtToken.Claims.(jwt.MapClaims)
 	if !ok || !jwtToken.Valid {
-		err = fmt.Errorf("invalid token")
-		return
+		return JWT{}, fmt.Errorf("invalid token")
 	}
 
-	id := claims["id"]
+	id, ok := claims["id"].(float64)
+	if !ok {
+		return JWT{}, fmt.Errorf("invalid token ID")
+	}
 
-	expires := fmt.Sprintf("%v", claims["expires"])
+	expiresStr, ok := claims["expires"].(string)
+	if !ok {
+		return JWT{}, fmt.Errorf("missing expiry time in token")
+	}
 
-	expiresTime, err := time.Parse(time.RFC3339, expires)
+	expiresTime, err := time.Parse(time.RFC3339, expiresStr)
 	if err != nil {
-		return
+		return JWT{}, fmt.Errorf("failed to parse expiry time: %v", err)
 	}
 
 	if time.Now().After(expiresTime) {
-		err = fmt.Errorf("token expired")
-		return
+		return JWT{}, fmt.Errorf("token expired")
 	}
 
-	idInt, err := strconv.Atoi(fmt.Sprintf("%v", id))
-	if err != nil {
-		return
-	}
-
-	token = NewJWT(idInt)
-
-	return
+	return JWT{Id: int(id), Expires: expiresTime}, nil
 }
