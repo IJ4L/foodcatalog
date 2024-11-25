@@ -1,33 +1,33 @@
 create-network:
-	docker network create foodCatalog
+	docker network create food-catalog
 
 pg:
 	docker run -d \
-		--name foodCatalog \
-		--network foodCatalog \
+		--name food-catalog \
+		--network food-catalog \
 		-p 5432:5432 \
   	-e POSTGRES_USER=root \
 		-e POSTGRES_PASSWORD=secret \
   	postgres
 
 pgrm:
-	docker stop foodCatalog
-	docker rm foodCatalog
+	docker stop food-catalog
+	docker rm food-catalog
 
 createdb:
-	docker exec -it foodCatalog createdb --username=root --owner=root foodCatalog
+	docker exec -it food-catalog createdb --username=root --owner=root food-catalog
 
 dropdb:
-	docker exec -it foodCatalog dropdb foodCatalog
+	docker exec -it food-catalog dropdb food-catalog
 
 schema:
 	migrate create -ext sql -dir external/database/migrations -seq init_schema
 
 migrateup:
-	migrate -path database/postgres/migrations -database "postgresql://root:secret@localhost:5432/foodCatalog?sslmode=disable" -verbose up
+	migrate -path database/postgres/migrations -database "postgresql://root:secret@localhost:5432/food-catalog?sslmode=disable" -verbose up
 
 migratedown:
-	migrate -path database/postgres/migrations -database "postgresql://root:secret@localhost:5432/foodCatalog?sslmode=disable" -verbose down
+	migrate -path database/postgres/migrations -database "postgresql://root:secret@localhost:5432/food-catalog?sslmode=disable" -verbose down
 
 sqlc:
 	sqlc generate
