@@ -7,6 +7,8 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/ij4l/foodCatalog/apps"
 	"github.com/ij4l/foodCatalog/apps/auth"
+	"github.com/ij4l/foodCatalog/apps/employee"
+	"github.com/ij4l/foodCatalog/apps/menu"
 	database "github.com/ij4l/foodCatalog/database/postgres"
 	"github.com/ij4l/foodCatalog/graph"
 	"github.com/ij4l/foodCatalog/util"
@@ -59,7 +61,9 @@ func startServer(config util.Config, repo apps.AppRepository, graphServer *handl
 
 func graphConfig(repo *apps.AppRepository) graph.Config {
 	resolver := graph.Resolver{
-		AuthHandler: auth.InitializeAuthHandler(repo),
+		AuthHandler:     auth.InitializeAuthHandler(repo),
+		EmployeeHandler: employee.InitializeAuthHandler(repo),
+		MenuHandler:     menu.InitializeMenuHandler(repo),
 	}
 
 	return graph.Config{Resolvers: &resolver}

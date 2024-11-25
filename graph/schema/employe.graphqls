@@ -1,0 +1,24 @@
+type Employee {
+  ID: Int!
+  Name: String!
+  Address: String!
+  Nip: String!
+  Created_at: String!
+  Updated_at: String!
+}
+
+extend type Query {
+  listEmployee: [Employee!]!
+  employee(ID: Int!): Employee!
+}
+
+input NewEmployee {
+  Name: String!
+  Nip: String!
+  Address: String!
+}
+
+extend type Mutation {
+  createEmployee(input: NewEmployee!): Employee!
+  removeEmployee(ID: Int!): Boolean!
+}

@@ -1,8 +1,8 @@
--- name: InsertEmployee :exec
+-- name: InsertEmployee :one
 INSERT INTO
   employees (name, address, nip, created_at, updated_at)
 VALUES
-  ($1, $2, $3, now(), now());
+  ($1, $2, $3, now(), now()) RETURNING *;
 
 -- name: SelectAllEmployee :many
 SELECT
@@ -10,9 +10,23 @@ SELECT
   name,
   address,
   nip,
-  created_at
+  created_at,
+  updated_at
 FROM
   employees;
+
+-- name: SelectEmployeeByID :one
+SELECT
+  id,
+  name,
+  address,
+  nip,
+  created_at,
+  updated_at
+FROM
+  employees
+WHERE
+  id = $1;
 
 -- name: RemoveEmployeeByID :exec
 DELETE FROM

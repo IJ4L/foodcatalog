@@ -10,8 +10,8 @@ func NewAuthHandler(as AuthService) AuthHandler {
 	return AuthHandler{as: as}
 }
 
-func (ah AuthHandler) Register(md model.NewUser) (err error) {
-	err = ah.as.create(md)
+func (ah AuthHandler) Register(md model.NewUser) (ur *model.UserResponse, err error) {
+	ur ,err = ah.as.create(md)
 	return
 }
 

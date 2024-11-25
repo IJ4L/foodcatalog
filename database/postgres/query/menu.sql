@@ -1,4 +1,4 @@
--- name: InsertMenu :exec
+-- name: InsertMenu :one
 INSERT INTO
   menus (
     name,
@@ -9,7 +9,7 @@ INSERT INTO
     updated_at
   )
 VALUES
-  ($1, $2, $3, $4, $5, $6);
+  ($1, $2, $3, $4, $5, $6) RETURNING *;
 
 -- name: SelectAllMenu :many
 SELECT

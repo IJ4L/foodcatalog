@@ -11,7 +11,7 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const insertMenu = `-- name: InsertMenu :exec
+const insertMenu = `-- name: InsertMenu :one
 INSERT INTO
   menus (
     name,
@@ -22,7 +22,7 @@ INSERT INTO
     updated_at
   )
 VALUES
-  ($1, $2, $3, $4, $5, $6)
+  ($1, $2, $3, $4, $5, $6) RETURNING id, name, category, description, price, image_url, created_at, updated_at
 `
 
 type InsertMenuParams struct {
@@ -34,8 +34,8 @@ type InsertMenuParams struct {
 	UpdatedAt   pgtype.Timestamptz `json:"updated_at"`
 }
 
-func (q *Queries) InsertMenu(ctx context.Context, arg InsertMenuParams) error {
-	_, err := q.db.Exec(ctx, insertMenu,
+func (q *Queries) InsertMenu(ctx context.Context, arg InsertMenuParams) (Menu, error) {
+	row := q.db.QueryRow(ctx, insertMenu,
 		arg.Name,
 		arg.Category,
 		arg.Description,
@@ -43,7 +43,18 @@ func (q *Queries) InsertMenu(ctx context.Context, arg InsertMenuParams) error {
 		arg.CreatedAt,
 		arg.UpdatedAt,
 	)
-	return err
+	var i Menu
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Category,
+		&i.Description,
+		&i.Price,
+		&i.ImageUrl,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const selectAllMenu = `-- name: SelectAllMenu :many

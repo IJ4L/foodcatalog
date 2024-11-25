@@ -9,12 +9,13 @@ import (
 )
 
 type Querier interface {
-	InsertEmployee(ctx context.Context, arg InsertEmployeeParams) error
-	InsertMenu(ctx context.Context, arg InsertMenuParams) error
-	InsertUser(ctx context.Context, arg InsertUserParams) error
+	InsertEmployee(ctx context.Context, arg InsertEmployeeParams) (Employee, error)
+	InsertMenu(ctx context.Context, arg InsertMenuParams) (Menu, error)
+	InsertUser(ctx context.Context, arg InsertUserParams) (InsertUserRow, error)
 	RemoveEmployeeByID(ctx context.Context, id int32) error
 	SelectAllEmployee(ctx context.Context) ([]SelectAllEmployeeRow, error)
 	SelectAllMenu(ctx context.Context) ([]SelectAllMenuRow, error)
+	SelectEmployeeByID(ctx context.Context, id int32) (SelectEmployeeByIDRow, error)
 	SelectMenuByID(ctx context.Context, id int32) (SelectMenuByIDRow, error)
 	SelectUserByEmail(ctx context.Context, email string) (Auth, error)
 }

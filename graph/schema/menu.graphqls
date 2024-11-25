@@ -1,0 +1,25 @@
+type Menu {
+  ID: Int!
+  Name: String!
+  Category: String!
+  Desc: String!
+  Price: Int!
+  Created_at: String!
+  Updated_at: String!
+}
+
+extend type Query {
+  listMenu: [Menu!]!
+  menu(ID: Int): Menu!
+}
+
+input NewMenu {
+  Name: String!
+  Category: String!
+  Desc: String!
+  Price: Int!
+}
+
+extend type Mutation {
+  createMenu(input: NewMenu): Menu!
+}

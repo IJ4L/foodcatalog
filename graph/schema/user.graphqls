@@ -1,16 +1,21 @@
-# GraphQL schema example
-#
-# https://gqlgen.com/getting-started/
-
 type User {
   id: Int!
   email: String!
   password: String!
+  CratedAt: String!
+  UpdatedAt: String!
+}
+
+type UserResponse {
+  id: Int!
+  email: String!
+  CratedAt: String!
+  UpdatedAt: String!
 }
 
 type AuthPayload {
   token: String
-  user: User
+  user: UserResponse
 }
 
 type Query {
@@ -23,5 +28,5 @@ input NewUser {
 }
 
 type Mutation {
-  createUser(input: NewUser!): User!
+  createUser(input: NewUser!): UserResponse!
 }

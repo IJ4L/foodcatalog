@@ -7,13 +7,15 @@ package db
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const insertUser = `-- name: InsertUser :exec
+const insertUser = `-- name: InsertUser :one
 INSERT INTO
   auth (email, password)
 VALUES
-  ($1, $2)
+  ($1, $2) RETURNING id, email, created_at, updated_at
 `
 
 type InsertUserParams struct {
@@ -21,9 +23,23 @@ type InsertUserParams struct {
 	Password string `json:"password"`
 }
 
-func (q *Queries) InsertUser(ctx context.Context, arg InsertUserParams) error {
-	_, err := q.db.Exec(ctx, insertUser, arg.Email, arg.Password)
-	return err
+type InsertUserRow struct {
+	ID        int32              `json:"id"`
+	Email     string             `json:"email"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt pgtype.Timestamptz `json:"updated_at"`
+}
+
+func (q *Queries) InsertUser(ctx context.Context, arg InsertUserParams) (InsertUserRow, error) {
+	row := q.db.QueryRow(ctx, insertUser, arg.Email, arg.Password)
+	var i InsertUserRow
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const selectUserByEmail = `-- name: SelectUserByEmail :one

@@ -1,6 +1,10 @@
 package graph
 
-import "github.com/ij4l/foodCatalog/apps/auth"
+import (
+	"github.com/ij4l/foodCatalog/apps/auth"
+	"github.com/ij4l/foodCatalog/apps/employee"
+	"github.com/ij4l/foodCatalog/apps/menu"
+)
 
 // This file will not be regenerated automatically.
 //
@@ -8,4 +12,6 @@ import "github.com/ij4l/foodCatalog/apps/auth"
 
 type Resolver struct {
 	AuthHandler auth.AuthHandler
+	EmployeeHandler employee.EmployeeHandler
+	MenuHandler menu.MenuHandler
 }

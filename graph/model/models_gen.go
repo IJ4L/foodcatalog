@@ -3,11 +3,43 @@
 package model
 
 type AuthPayload struct {
-	Token *string `json:"token,omitempty"`
-	User  *User   `json:"user,omitempty"`
+	Token *string       `json:"token,omitempty"`
+	User  *UserResponse `json:"user,omitempty"`
+}
+
+type Employee struct {
+	ID        int    `json:"ID"`
+	Name      string `json:"Name"`
+	Address   string `json:"Address"`
+	Nip       string `json:"Nip"`
+	CreatedAt string `json:"Created_at"`
+	UpdatedAt string `json:"Updated_at"`
+}
+
+type Menu struct {
+	ID        int    `json:"ID"`
+	Name      string `json:"Name"`
+	Category  string `json:"Category"`
+	Desc      string `json:"Desc"`
+	Price     int    `json:"Price"`
+	CreatedAt string `json:"Created_at"`
+	UpdatedAt string `json:"Updated_at"`
 }
 
 type Mutation struct {
+}
+
+type NewEmployee struct {
+	Name    string `json:"Name"`
+	Nip     string `json:"Nip"`
+	Address string `json:"Address"`
+}
+
+type NewMenu struct {
+	Name     string `json:"Name"`
+	Category string `json:"Category"`
+	Desc     string `json:"Desc"`
+	Price    int    `json:"Price"`
 }
 
 type NewUser struct {
@@ -19,7 +51,16 @@ type Query struct {
 }
 
 type User struct {
-	ID       int    `json:"id"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	ID        int    `json:"id"`
+	Email     string `json:"email"`
+	Password  string `json:"password"`
+	CratedAt  string `json:"CratedAt"`
+	UpdatedAt string `json:"UpdatedAt"`
+}
+
+type UserResponse struct {
+	ID        int    `json:"id"`
+	Email     string `json:"email"`
+	CratedAt  string `json:"CratedAt"`
+	UpdatedAt string `json:"UpdatedAt"`
 }
