@@ -2,7 +2,7 @@
 
 ### Installation
 
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
+_How installing and setting up app._
 
 1. Clone the repo
    ```sh
